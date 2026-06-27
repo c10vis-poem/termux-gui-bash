@@ -124,14 +124,26 @@ get a working voice loop before native `/listen` `/tts` land in openclaude.
    whisper/kokoro binary (make the backend a configurable command string).
 4. Rebuild, smoke-test `/listen` and `/tts`, push.
 
-## 4. Test XFCE desktop
+## 4. XFCE desktop — real stack is TigerVNC + Debian + AVNC
+
+Actual stack in use: `Termux → tmux → proot Debian → TigerVNC (X11) → XFCE`,
+viewed in the **AVNC** app on `127.0.0.1`:
+- `:1 → 5901` gui · `:2 → 5902` portrait · `:3 → 5903` landscape
+
+Launcher lives at `examples/tigervnc-debian/vnc.sh`:
 
 ```sh
-~/scripts/start-xfce.sh        # or start-xfce-proot.sh
-# Connect a VNC viewer (or termux-x11) to the advertised display.
-~/scripts/stop-xfce.sh
+./vnc.sh start gui          # :1 -> 5901
+./vnc.sh start portrait     # :2 -> 5902  (geometry 500x1280)
+./vnc.sh start landscape    # :3 -> 5903  (geometry 1280x500)
+./vnc.sh status
 ```
-Record: which script works, the display/port, and any missing packages.
+
+Geometry defaults are ~half native (≈`1280x500` / flipped `500x1280`);
+override with `GEOM_*` env vars. See `examples/tigervnc-debian/README.md`.
+
+> The earlier `examples/xfce-x11-launcher/` (Termux:X11 + Ubuntu chroot) is a
+> *different* approach, kept only as an alternative — not the live stack.
 
 ## 5. Task 6 — kokoro-onnx Android arm64 build docs
 
